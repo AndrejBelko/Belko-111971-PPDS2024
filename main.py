@@ -29,11 +29,17 @@ def jano():
     eating('Jano')
 
 
+def fero():
+    sleeping('Fero')
+    hygiene('Fero')
+    eating('Fero')
+
+
 def main():
     semaphore = Semaphore(0)
     shared = Shared(semaphore)
-    t1 = Thread(jano, shared.semaphore)
-    t2 = Thread(fero, shared.semaphore)
+    t1 = Thread(jano, shared)
+    t2 = Thread(fero, shared)
 
     t1.join()
     t2.join()

@@ -23,16 +23,21 @@ def eating(person):
     sleep(2)
 
 
-def jano():
+def jano(shared):
     sleeping('Jano')
     hygiene('Jano')
     eating('Jano')
+    shared.semaphore.signal()
+    print('Jano is calling Fero')
 
 
-def fero():
+def fero(shared):
     sleeping('Fero')
     hygiene('Fero')
+    shared.semaphore.wait()
+    print('Fero is answering')
     eating('Fero')
+    shared.semaphore.signal()
 
 
 def main():

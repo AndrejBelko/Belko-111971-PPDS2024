@@ -45,8 +45,8 @@ def jano(shared):
     sleeping('Jano')
     hygiene('Jano')
     eating('Jano')
-    shared.semaphore.signal()
     print('Jano is calling Fero')
+    shared.semaphore.signal()
 
 
 def fero(shared):

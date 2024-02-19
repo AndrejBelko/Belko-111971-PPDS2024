@@ -89,7 +89,7 @@ Jano is calling Fero
 Fero is answering
 Fero is eating
 ```
-Rozdiel medzi behom č. 1 a behom č. 2 je, že funkcia *hygiene()* v prvom behu funkciu *hygiene()* najprv vykoná vlákno 
+Rozdiel medzi behom č. 1 a behom č. 2 je, že v prvom behu funkciu *hygiene()* najprv vykoná vlákno 
 Fero, pri druhom behu je to vlákno Jano. To je dôkaz o konkurentnom behu programu.
 
 ## Zdroje

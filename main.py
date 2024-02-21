@@ -60,6 +60,7 @@ def fero(shared):
 
 
 def main():
+    """This function creates the semaphore and threads and run them"""
     semaphore = Semaphore(0)
     shared = Shared(semaphore)
     t1 = Thread(jano, shared)

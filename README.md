@@ -95,3 +95,4 @@ Fero, pri druhom behu je to vlákno Jano. To je dôkaz o konkurentnom behu progr
 ## Zdroje
 https://github.com/tj314/ppds-seminars/blob/ppds2024/seminar1/semaphore_example.py
 https://elearn.elf.stuba.sk/moodle/pluginfile.php/77036/mod_resource/content/1/PPDS_seminar_01_2024.pdf
+https://www.dataquest.io/blog/documenting-in-python-with-docstrings/

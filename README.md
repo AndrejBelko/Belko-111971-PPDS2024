@@ -12,6 +12,13 @@ ktorá danú činnosť vykonáva. To som zabezpečil posielaním reťazca s meno
 bolo vykonanie príkazu *sleep()* na určitý počet sekúnd. Príklad funkcie simulujúcej spánok osoby:
 ```python
 def sleeping(person):
+    """This function simulates sleeping of the person.
+
+    Parameter:
+    ----------
+    person : str
+        The name of the person sleeping.
+    """
     print(f'{person} is sleeping')
     sleep(5)
 ```
@@ -26,6 +33,7 @@ ktorú tvoril iba semafór. Potom som vytvoril 2 vlákna s funkciami *jano* a *f
 
 ```python
 def main():
+    """This function creates the semaphore and threads and run them"""
     semaphore = Semaphore(0)
     shared = Shared(semaphore)
     t1 = Thread(jano, shared)
@@ -41,6 +49,14 @@ dôvodu, že Jano mal raňajkovať ako prvý, následne mal zavolať Ferovi, kto
 
 ```python
 def jano(shared):
+    """
+    This function simulates Jano's morning routine.
+
+    Parameter:
+    ---------
+    shared: Shared
+        An instance of Shared class with shared data (semaphore).
+    """
     sleeping('Jano')
     hygiene('Jano')
     eating('Jano')
@@ -56,6 +72,14 @@ Funkcia *fero* vyzerala podobne ako funkcia *jano*. Rozdielom bolo, že funkciu 
 
 ```python
 def fero(shared):
+    """
+    This function simulates Fero's morning routine.
+
+    Parameter:
+    ---------
+    shared: Shared
+        An instance of Shared class with shared data (semaphore).
+    """
     sleeping('Fero')
     hygiene('Fero')
     shared.semaphore.wait()

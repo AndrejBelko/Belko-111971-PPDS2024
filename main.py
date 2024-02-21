@@ -1,21 +1,58 @@
 from time import sleep
 
-from fei.ppds import Thread, Semaphore, print
+from fei.ppds import Thread, Semaphore, print, Mutex
 
+SAVAGE = 7
 
 class Shared:
     """This class represents shared data."""
-    def __init__(self, servings, cook):
+
+    def __init__(self, servings, cook, mutex, eating, turnstile1, turnstile2):
         """Initializes shared data."""
         self.servings = servings
         self.cook = cook
+        self.mutex = mutex
+        self.eating = eating
+        self.turnstile1 = turnstile1
+        self.turnstile2 = turnstile2
+
+
+def barrier():
+
+
+
+def savage(i, shared):
+    """
+    This function simulates behaviour of savage.
+    :param i: Number of savage
+    :param shared: An instance of Shared class with shared data.
+    :return:
+    """
+
+    while True:
+        shared.mutex.lock()
+        print(f"Savage {i} come to dinner")
+        shared.eating += 1
+        if shared.eating == SAVAGE:
+            shared.turnstile1.signal(SAVAGE)
+        shared.mutex.unlock()
+        shared.turnstile1.wait()
 
 
 def main():
     """This function creates the semaphore and threads and run them"""
     servings = 10
     cook = Semaphore(0)
-    shared = Shared(servings, cook)
+    mutex = Mutex()
+    eating = 0
+    turnstile1 = Semaphore(0)
+    turnstile2 = Semaphore(0)
+    shared = Shared(servings, cook, mutex, eating, turnstile1, turnstile2)
+
+    threads = []
+
+    for i in range(SAVAGE):
+        threads.append(Thread(savage, i, shared))
 
 
 if __name__ == '__main__':

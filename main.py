@@ -13,35 +13,50 @@ class Shared:
 def sleeping(person):
     """This function simulates sleeping of the person.
 
-    Parameters:
-    - person (str): The name of the person sleeping.
+    Parameter:
+    ----------
+    person : str
+        The name of the person sleeping.
     """
     print(f'{person} is sleeping')
     sleep(5)
 
 
 def hygiene(person):
-    """This function simulates person doing hygiene.
+    """
+    This function simulates person doing hygiene.
 
-    Parameters:
-    - person (str): The name of the person doing hygiene.
+    Parameter:
+    ----------
+    person : str
+        The name of the person doing hygiene.
     """
     print(f'{person} is doing hygiene')
     sleep(2)
 
 
 def eating(person):
-    """This function simulates eating of the person.
+    """
+    This function simulates eating of the person.
 
-    Parameters:
-    - person (str): The name of the person eating.
+    Parameter:
+    ----------
+    person : str
+        The name of the person eating.
     """
     print(f'{person} is eating')
     sleep(2)
 
 
 def jano(shared):
-    """This function simulates Jano's morning routine."""
+    """
+    This function simulates Jano's morning routine.
+
+    Parameter:
+    ---------
+    shared: Shared
+        An instance of Shared class with shared data (semaphore).
+    """
     sleeping('Jano')
     hygiene('Jano')
     eating('Jano')
@@ -50,7 +65,14 @@ def jano(shared):
 
 
 def fero(shared):
-    """This function simulates Fero's morning routine."""
+    """
+    This function simulates Fero's morning routine.
+
+    Parameter:
+    ---------
+    shared: Shared
+        An instance of Shared class with shared data (semaphore).
+    """
     sleeping('Fero')
     hygiene('Fero')
     shared.semaphore.wait()

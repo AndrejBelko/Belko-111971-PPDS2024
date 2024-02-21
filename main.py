@@ -4,6 +4,7 @@ from fei.ppds import Thread, Semaphore, print, Mutex
 
 SAVAGE = 7
 
+
 class Shared:
     """This class represents shared data."""
 
@@ -15,10 +16,6 @@ class Shared:
         self.eating = eating
         self.turnstile1 = turnstile1
         self.turnstile2 = turnstile2
-
-
-def barrier():
-
 
 
 def savage(i, shared):
@@ -34,9 +31,23 @@ def savage(i, shared):
         print(f"Savage {i} come to dinner")
         shared.eating += 1
         if shared.eating == SAVAGE:
+            print(f"Savage {i} is last, everybody is now at dinner.")
             shared.turnstile1.signal(SAVAGE)
         shared.mutex.unlock()
         shared.turnstile1.wait()
+
+        shared.mutex.lock()
+        print(f"Savage {i} take dish")
+        shared.servings -= 1
+        if shared.servings == 0:
+            print(f"Savage {i} take last dish")
+            shared.cook.signal()
+        shared.eating -= 1
+        if shared.eating == 0:
+            print(f"Savage {i} is last eating.")
+            shared.turnstile2.signal(SAVAGE)
+        shared.mutex.unlock()
+        shared.turnstile2.wait()
 
 
 def main():

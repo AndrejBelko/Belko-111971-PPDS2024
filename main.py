@@ -8,15 +8,25 @@ SAVAGE = 7
 class Shared:
     """This class represents shared data."""
 
-    def __init__(self, servings, cook, mutex, eating, turnstile1, turnstile2):
+    def __init__(self, servings, cook_sem, mutex, eating, turnstile1, turnstile2):
         """Initializes shared data."""
         self.servings = servings
-        self.cook = cook
+        self.cook_sem = cook_sem
         self.mutex = mutex
         self.eating = eating
         self.turnstile1 = turnstile1
         self.turnstile2 = turnstile2
 
+
+def cook_function(shared):
+    """
+    This function simulates the cooking.
+    :param shared: An instance of Shared class with shared data.
+    :return:
+    """
+    shared.cook_sem.wait()
+    print("Cooking started.")
+    shared.servings = 10
 
 def savage(i, shared):
     """
@@ -53,18 +63,19 @@ def savage(i, shared):
 def main():
     """This function creates the semaphore and threads and run them"""
     servings = 10
-    cook = Semaphore(0)
+    cook_sem = Semaphore(0)
     mutex = Mutex()
     eating = 0
     turnstile1 = Semaphore(0)
     turnstile2 = Semaphore(0)
-    shared = Shared(servings, cook, mutex, eating, turnstile1, turnstile2)
+    shared = Shared(servings, cook_sem, mutex, eating, turnstile1, turnstile2)
 
     threads = []
 
     for i in range(SAVAGE):
         threads.append(Thread(savage, i, shared))
 
+    cook_thread = Thread(cook_function, shared)
 
 if __name__ == '__main__':
     main()

@@ -38,26 +38,29 @@ def savage(i, shared):
 
     while True:
         shared.mutex.lock()
-        print(f"Savage {i} come to dinner")
         shared.eating += 1
-        if shared.eating == SAVAGE:
-            print(f"Savage {i} is last, everybody is now at dinner.")
+        if shared.eating != SAVAGE:
+            print(f"Savage {i} come to dinner")
+        elif shared.eating == SAVAGE:
+            print(f"Savage {i} come to dinner last, everybody is now at dinner.")
             shared.turnstile1.signal(SAVAGE)
         shared.mutex.unlock()
         shared.turnstile1.wait()
 
         shared.mutex.lock()
-        print(f"Savage {i} take dish")
         shared.servings -= 1
-        if shared.servings == 0:
+        if shared.eating != 0:
+            print(f"Savage {i} take dish")
+        elif shared.servings == 0:
             print(f"Savage {i} take last dish")
-            shared.cook.signal()
+            shared.cook_sem.signal()
         shared.eating -= 1
         if shared.eating == 0:
             print(f"Savage {i} is last eating.")
             shared.turnstile2.signal(SAVAGE)
         shared.mutex.unlock()
         shared.turnstile2.wait()
+        sleep(2)
 
 
 def main():
@@ -76,6 +79,12 @@ def main():
         threads.append(Thread(savage, i, shared))
 
     cook_thread = Thread(cook_function, shared)
+
+    for thread in threads:
+        thread.join()
+
+    cook_thread.join()
+
 
 if __name__ == '__main__':
     main()

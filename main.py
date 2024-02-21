@@ -46,10 +46,11 @@ def savage(i, shared):
             shared.turnstile1.signal(SAVAGE)
         shared.mutex.unlock()
         shared.turnstile1.wait()
+        sleep(2)
 
         shared.mutex.lock()
         shared.servings -= 1
-        if shared.eating != 0:
+        if shared.servings != 0:
             print(f"Savage {i} take dish")
         elif shared.servings == 0:
             print(f"Savage {i} take last dish")
@@ -58,9 +59,9 @@ def savage(i, shared):
         if shared.eating == 0:
             print(f"Savage {i} is last eating.")
             shared.turnstile2.signal(SAVAGE)
+        sleep(1)
         shared.mutex.unlock()
         shared.turnstile2.wait()
-        sleep(2)
 
 
 def main():

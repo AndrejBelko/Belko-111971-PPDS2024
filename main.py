@@ -39,7 +39,6 @@ def savage(i, shared):
     """
 
     while True:
-
         shared.mutex.lock()
         shared.ready_cnt += 1
         if shared.ready_cnt != SAVAGE:
@@ -59,9 +58,10 @@ def savage(i, shared):
         elif shared.servings == 0:
             print(f"Savage {i} take last dish. There is no serving in pot.")
             shared.cook_sem.signal()
-        sleep(1)
+
         shared.ready_cnt += 1
         if shared.ready_cnt == SAVAGE:
+            print("xxxx")
             shared.ready_cnt = 0
             shared.turnstile2.signal(SAVAGE)
             print()
@@ -69,7 +69,6 @@ def savage(i, shared):
         shared.turnstile2.wait()
 
         print(f"Savage {i} is eating.")
-        sleep(2)
 
 
 def main():

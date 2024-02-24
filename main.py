@@ -1,16 +1,15 @@
-from time import sleep
-
 from fei.ppds import Thread, Semaphore, print, Mutex
 
 SAVAGE = 7
+POT_CAPACITY = 10
 
 
 class Shared:
     """This class represents shared data."""
 
-    def __init__(self, servings, cook_sem, mutex, ready_cnt, turnstile1, turnstile2):
+    def __init__(self, cook_sem, mutex, ready_cnt, turnstile1, turnstile2):
         """Initializes shared data."""
-        self.servings = servings
+        self.servings = POT_CAPACITY
         self.cook_sem = cook_sem
         self.mutex = mutex
         self.ready_cnt = ready_cnt
@@ -27,7 +26,7 @@ def cook_function(shared):
     while True:
         shared.cook_sem.wait()
         print("Cooking started.")
-        shared.servings = 10
+        shared.servings = POT_CAPACITY
 
 
 def savage(i, shared):
@@ -61,7 +60,6 @@ def savage(i, shared):
 
         shared.ready_cnt += 1
         if shared.ready_cnt == SAVAGE:
-            print("xxxx")
             shared.ready_cnt = 0
             shared.turnstile2.signal(SAVAGE)
             print()
@@ -73,13 +71,12 @@ def savage(i, shared):
 
 def main():
     """This function creates semaphores, shared and threads and run them"""
-    servings = 10
     cook_sem = Semaphore(0)
     mutex = Mutex()
     ready_cnt = 0
     turnstile1 = Semaphore(0)
     turnstile2 = Semaphore(0)
-    shared = Shared(servings, cook_sem, mutex, ready_cnt, turnstile1, turnstile2)
+    shared = Shared(cook_sem, mutex, ready_cnt, turnstile1, turnstile2)
 
     threads = []
 

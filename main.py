@@ -7,7 +7,7 @@ POT_CAPACITY = 10
 class Shared:
     """This class represents shared data."""
 
-    def __init__(self, cook_sem, mutex, ready_cnt, turnstile1, turnstile2):
+    def __init__(self, cook_sem, mutex, ready_cnt, turnstile1, turnstile2, pot):
         """Initializes shared data."""
         self.servings = POT_CAPACITY
         self.cook_sem = cook_sem
@@ -15,6 +15,7 @@ class Shared:
         self.ready_cnt = ready_cnt
         self.turnstile1 = turnstile1
         self.turnstile2 = turnstile2
+        self.pot = pot
 
 
 def cook_function(shared):
@@ -27,6 +28,7 @@ def cook_function(shared):
         shared.cook_sem.wait()
         print("Cooking started.")
         shared.servings = POT_CAPACITY
+        shared.pot.signal()
 
 
 def savage(i, shared):
@@ -57,6 +59,7 @@ def savage(i, shared):
         elif shared.servings == 0:
             print(f"Savage {i} take last dish. There is no serving in pot.")
             shared.cook_sem.signal()
+            shared.pot.wait()
 
         shared.ready_cnt += 1
         if shared.ready_cnt == SAVAGE:
@@ -76,7 +79,8 @@ def main():
     ready_cnt = 0
     turnstile1 = Semaphore(0)
     turnstile2 = Semaphore(0)
-    shared = Shared(cook_sem, mutex, ready_cnt, turnstile1, turnstile2)
+    pot = Semaphore(0)
+    shared = Shared(cook_sem, mutex, ready_cnt, turnstile1, turnstile2, pot)
 
     threads = []
 

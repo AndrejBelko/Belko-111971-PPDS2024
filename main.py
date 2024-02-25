@@ -7,15 +7,24 @@ POT_CAPACITY = 10
 class Shared:
     """This class represents shared data."""
 
-    def __init__(self, cook_sem, mutex, ready_cnt, turnstile1, turnstile2, pot):
+    def __init__(self, cook_sem, mutex, pot, barrier):
         """Initializes shared data."""
         self.servings = POT_CAPACITY
         self.cook_sem = cook_sem
         self.mutex = mutex
-        self.ready_cnt = ready_cnt
-        self.turnstile1 = turnstile1
-        self.turnstile2 = turnstile2
         self.pot = pot
+        self.barrier = barrier
+
+
+class Barrier:
+    """This class"""
+    def __init__(self, ready_cnt, turnstile):
+        """Initializes barrier data."""
+        self.turnstile = turnstile
+        self.ready_cnt = ready_cnt
+
+    def wait(self):
+        """Waits until"""
 
 
 def cook_function(shared):
@@ -74,13 +83,14 @@ def savage(i, shared):
 
 def main():
     """This function creates semaphores, shared and threads and run them"""
+    ready_cnt = 0
+    turnstile = Semaphore(0)
+    barrier = Barrier(ready_cnt, turnstile)
+
     cook_sem = Semaphore(0)
     mutex = Mutex()
-    ready_cnt = 0
-    turnstile1 = Semaphore(0)
-    turnstile2 = Semaphore(0)
     pot = Semaphore(0)
-    shared = Shared(cook_sem, mutex, ready_cnt, turnstile1, turnstile2, pot)
+    shared = Shared(cook_sem, mutex, pot, barrier)
 
     threads = []
 

@@ -27,7 +27,13 @@ class Barrier:
         self.mutex = mutex
 
     def wait(self, string, print_each_thread=False, print_last_thread=False):
-        """Waits until"""
+        """
+        Waits until every thread reaches the barrier
+        :param string: string to be printed
+        :param print_each_thread: whether to print each thread
+        :param print_last_thread: whether to print the last thread
+        :return:
+        """
         self.mutex.lock()
         self.ready_cnt += 1
 
@@ -88,7 +94,7 @@ def savage(i, shared):
 
 
 def main():
-    """This function creates semaphores, shared and threads and run them"""
+    """This function creates barriers, shared and threads and run them"""
     ready_cnt = 0
     turnstile = Semaphore(0)
     barrier_mutex = Mutex()

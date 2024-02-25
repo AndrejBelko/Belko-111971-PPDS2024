@@ -18,7 +18,7 @@ class Shared:
 
 
 class Barrier:
-    """This class"""
+    """This class represents a barrier."""
 
     def __init__(self, ready_cnt, turnstile, mutex):
         """Initializes barrier data."""
@@ -73,20 +73,19 @@ def savage(i, shared):
 
     while True:
 
-        shared.barrier1.wait(f"Savage {i} come to dinner. We are now ",
-                            print_each_thread=True)
+        shared.barrier1.wait(f"Savage {i} come to dinner. We are now ", print_each_thread=True)
 
-        shared.barrier2.wait(f"Savage {i} come to dinner last, everybody is now at dinner.",
-                            print_last_thread=True)
+        shared.barrier2.wait(f"Savage {i} come to dinner last, everybody is now at dinner.", print_last_thread=True)
 
         shared.mutex.lock()
-        shared.servings -= 1
         if shared.servings != 0:
-            print(f"Savage {i} take dish. There are {shared.servings} servings in pot.")
+            print(f"There are {shared.servings} servings in pot. Savage {i} take dish.")
         elif shared.servings == 0:
-            print(f"Savage {i} take last dish. There is no serving in pot.")
+            print(f"There are {shared.servings} servings in pot. Savage {i} waiting for full pot.")
             shared.cook_sem.signal()
             shared.pot.wait()
+            print(f"There are {shared.servings} servings in pot. Savage {i} take dish.")
+        shared.servings -= 1
 
         shared.mutex.unlock()
 

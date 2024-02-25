@@ -7,24 +7,41 @@ POT_CAPACITY = 10
 class Shared:
     """This class represents shared data."""
 
-    def __init__(self, cook_sem, mutex, pot, barrier):
+    def __init__(self, cook_sem, pot, mutex, barrier1, barrier2):
         """Initializes shared data."""
         self.servings = POT_CAPACITY
         self.cook_sem = cook_sem
-        self.mutex = mutex
         self.pot = pot
-        self.barrier = barrier
+        self.mutex = mutex
+        self.barrier1 = barrier1
+        self.barrier2 = barrier2
 
 
 class Barrier:
     """This class"""
-    def __init__(self, ready_cnt, turnstile):
+
+    def __init__(self, ready_cnt, turnstile, mutex):
         """Initializes barrier data."""
         self.turnstile = turnstile
         self.ready_cnt = ready_cnt
+        self.mutex = mutex
 
-    def wait(self):
+    def wait(self, string, print_each_thread=False, print_last_thread=False):
         """Waits until"""
+        self.mutex.lock()
+        self.ready_cnt += 1
+
+        if print_each_thread:
+            print(string + str(self.ready_cnt))
+
+        if self.ready_cnt == SAVAGE:
+            if print_last_thread:
+                print(string)
+            self.ready_cnt = 0
+            self.turnstile.signal(SAVAGE)
+
+        self.mutex.unlock()
+        self.turnstile.wait()
 
 
 def cook_function(shared):
@@ -49,17 +66,12 @@ def savage(i, shared):
     """
 
     while True:
-        shared.mutex.lock()
-        shared.ready_cnt += 1
-        if shared.ready_cnt != SAVAGE:
-            print(f"Savage {i} come to dinner. There are already {shared.ready_cnt} of us")
-        elif shared.ready_cnt == SAVAGE:
-            print(f"Savage {i} come to dinner last, everybody is now at dinner.")
-            shared.ready_cnt = 0
-            shared.turnstile1.signal(SAVAGE)
-            print()
-        shared.mutex.unlock()
-        shared.turnstile1.wait()
+
+        shared.barrier1.wait(f"Savage {i} come to dinner. We are now ",
+                            print_each_thread=True)
+
+        shared.barrier2.wait(f"Savage {i} come to dinner last, everybody is now at dinner.",
+                            print_last_thread=True)
 
         shared.mutex.lock()
         shared.servings -= 1
@@ -70,13 +82,7 @@ def savage(i, shared):
             shared.cook_sem.signal()
             shared.pot.wait()
 
-        shared.ready_cnt += 1
-        if shared.ready_cnt == SAVAGE:
-            shared.ready_cnt = 0
-            shared.turnstile2.signal(SAVAGE)
-            print()
         shared.mutex.unlock()
-        shared.turnstile2.wait()
 
         print(f"Savage {i} is eating.")
 
@@ -85,12 +91,18 @@ def main():
     """This function creates semaphores, shared and threads and run them"""
     ready_cnt = 0
     turnstile = Semaphore(0)
-    barrier = Barrier(ready_cnt, turnstile)
+    barrier_mutex = Mutex()
+    barrier1 = Barrier(ready_cnt, turnstile, barrier_mutex)
 
-    cook_sem = Semaphore(0)
+    ready_cnt2 = 0
+    turnstile2 = Semaphore(0)
+    barrier_mutex2 = Mutex()
+    barrier2 = Barrier(ready_cnt2, turnstile2, barrier_mutex2)
+
     mutex = Mutex()
+    cook_sem = Semaphore(0)
     pot = Semaphore(0)
-    shared = Shared(cook_sem, mutex, pot, barrier)
+    shared = Shared(cook_sem, pot, mutex, barrier1, barrier2)
 
     threads = []
 

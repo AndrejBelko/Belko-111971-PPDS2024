@@ -192,6 +192,54 @@ Savage 4 come to dinner last, everybody is now at dinner.
 There are 9 servings in pot. Savage 4 take dish.
 ```
 
+## Synchornizačné vzory
+### Mutex
+Zabezpečenie aby v jednom čase pristupovalo k zdieľanej pamäti len jedno vlákno. 
+Príklad: Zniženie počtu porcií v hrnci keď si divoch zoberie jedlo.
+```python
+shared.mutex.lock()
+if shared.servings != 0:
+    print(f"There are {shared.servings} servings in pot. Savage {i} take dish.")
+elif shared.servings == 0:
+    print(f"There are {shared.servings} servings in pot. Savage {i} waiting for full pot.")
+    shared.cook_sem.signal()
+    shared.pot.wait()
+    print(f"There are {shared.servings} servings in pot. Savage {i} take dish.")
+shared.servings -= 1
+shared.mutex.unlock()
+```
+
+### Semafór
+Semafór je celočíselná premenná zdieľaná medzi viacerými procesmi. Na rozdiel od mutexu, prístup do kritickej oblasti môže
+povoliť iné vlákno (napr. také, ktoré do oblasti nevstupuje).
+Príklad: Signalizácia kuchárovi, že hrniec je prázdny. Signalizácia divochom, že hrniec je plný.
+```python
+print(f"There are {shared.servings} servings in pot. Savage {i} waiting for full pot.")
+shared.cook_sem.signal()
+shared.pot.wait()
+```
+### Turniket
+Turniket je semafór, ktorý umožňuje prechod všetkých vlákien cez bariéru. Implementácia je zobrazená pri ukážke kódu triedy
+*Barrier* vyššie v dokumentácii.
+
+### Bariéra
+Ukážka implementácie bariéry je zobrazená vyššie v dokumentácii. Slúži na zosychronizovanie, stretnutie všetkých vlákien na 
+jednom mieste v kóde.
+
+### Znovupoužiteľná bariéra 
+Bariéra, ktorá vykonavá rovnakú funkciu a je použiteľná na viacerých miestach v programe.
+
+```python
+shared.barrier1.wait(f"Savage {i} come to dinner. We are now ", print_each_thread=True)
+
+shared.barrier2.wait(f"Savage {i} come to dinner last, everybody is now at dinner.", print_last_thread=True)
+```
+
+
+
+
+
+
 ## Zdroje
 https://elearn.elf.stuba.sk/moodle/pluginfile.php/77190/mod_resource/content/1/PPDS_seminar_02_2024.pdf
 https://elearn.elf.stuba.sk/moodle/pluginfile.php/77169/mod_resource/content/2/2024-02.mutex%20multiplex%20randezvouse%20bariera.pdf

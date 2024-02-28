@@ -228,7 +228,6 @@ jednom mieste v kóde.
 
 ### Znovupoužiteľná bariéra 
 Bariéra, ktorá vykonavá rovnakú funkciu a je použiteľná na viacerých miestach v programe.
-
 ```python
 shared.barrier1.wait(f"Savage {i} come to dinner. We are now ", print_each_thread=True)
 
@@ -237,9 +236,7 @@ shared.barrier2.wait(f"Savage {i} come to dinner last, everybody is now at dinne
 
 
 
-
-
-
 ## Zdroje
 https://elearn.elf.stuba.sk/moodle/pluginfile.php/77190/mod_resource/content/1/PPDS_seminar_02_2024.pdf
 https://elearn.elf.stuba.sk/moodle/pluginfile.php/77169/mod_resource/content/2/2024-02.mutex%20multiplex%20randezvouse%20bariera.pdf
+https://www.baeldung.com/cs/semaphore

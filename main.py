@@ -2,6 +2,8 @@ import threading
 
 from fei.ppds import Thread, Semaphore, print, Mutex
 
+C = 6
+
 
 class Shared:
     def __init__(self, boardQ, boarded, unboardQ, unboarded, boardB, unboardB):
@@ -22,7 +24,7 @@ class Barrier:
         self.ready_cnt = ready_cnt
         self.mutex = mutex
 
-    def wait(self, string, print_each_thread=False, print_last_thread=False):
+    def wait(self, semaphore, unboard=False, board=False):
         """
         Waits until every thread reaches the barrier
         :param string: string to be printed
@@ -33,14 +35,10 @@ class Barrier:
         self.mutex.lock()
         self.ready_cnt += 1
 
-        if print_each_thread:
-            print(string + str(self.ready_cnt))
-
-        if self.ready_cnt == SAVAGE:
-            if print_last_thread:
-                print(string)
+        if self.ready_cnt == C:
+            semaphore.signal()
             self.ready_cnt = 0
-            self.turnstile.signal(SAVAGE)
+            self.turnstile.signal(C)
 
         self.mutex.unlock()
         self.turnstile.wait()
@@ -84,12 +82,12 @@ def passenger(i, shared):
     """Passenger """
     while True:
         shared.boardQ.wait()
-        board()
-        shared.boardB.wait(shared.boarded.signal())  # bariera
+        board(i)
+        shared.boardB.wait(shared.boarded, board=True)  # bariera
 
         shared.unboardQ.wait()
-        unboard()
-        shared.unboardB.wait(shared.unboarded.signal())  # bariera
+        unboard(i)
+        shared.unboardB.wait(shared.unboarded, unboard=True)  # bariera
 
 
 def main():
@@ -110,6 +108,18 @@ def main():
     unboardB = Barrier(ready_cnt2, turnstile2, barrier_mutex2)
 
     shared = Shared(boardQ, boarded, unboardQ, unboarded, boardB, unboardB)
+
+    threads = []
+
+    for i in range(C):
+        threads.append(Thread(passenger, i, shared))
+
+    train_thread = Thread(train, shared)
+
+    for thread in threads:
+        thread.join()
+
+    train_thread.join()
 
 
 if __name__ == '__main__':

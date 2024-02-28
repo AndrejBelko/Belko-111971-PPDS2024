@@ -2,10 +2,15 @@ import threading
 
 from fei.ppds import Thread, Semaphore, print, Mutex
 
+
 class Shared:
-    def __init__(self):
-        self.semaphore = Semaphore()
-        self.mutex = Mutex()
+    def __init__(self, boardQ, boarded, unboardQ, unboarded, boardB, unboardB):
+        self.boardQ = boardQ
+        self.boarded = boarded
+        self.unboardQ = unboardQ
+        self.unboarded = unboarded
+        self.boardB = boardB
+        self.unboardB = unboardB
 
 
 class Barrier:
@@ -39,6 +44,32 @@ class Barrier:
 
         self.mutex.unlock()
         self.turnstile.wait()
+
+
+def train():
+    """Train the """
+    while True:
+        load()
+        shared.boardQ.signal(C)
+        shared.boarded.wait()
+
+        run()
+
+        unload()
+        shared.unboardQ.signal(C)
+        shared.unboarded.wait()
+
+def passenger():
+    """Passenger """
+    while True:
+        shared.boardQ.wait()
+        board()
+        shared.boardB.wait(shared.boarded.signal()) #bariera
+
+        shared.unboardQ.wait()
+        unboard()
+        shared.unboardB.wait(shared.unboarded.signal()) #bariera
+
 
 def main():
     print("Hello World!")

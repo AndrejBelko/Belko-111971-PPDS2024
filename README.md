@@ -1,4 +1,4 @@
-# Zadanie 1
+# Zadanie 2
 Divosi v Rovníkovej Guinei sú veľmi spoločenský a vyspelý typ divochov.
 Nielen, že každý deň jedia vždy spolu, ale majú medzi sebou aj šikovného
 kuchára, ktorý pripravuje výborný guláš zo zebry. Potrebujú však spoľahlivý

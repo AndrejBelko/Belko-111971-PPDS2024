@@ -2,7 +2,8 @@ import threading
 
 from fei.ppds import Thread, Semaphore, print, Mutex
 
-C = 6
+C = 5
+N = 10
 
 
 class Shared:
@@ -111,7 +112,7 @@ def main():
 
     threads = []
 
-    for i in range(C):
+    for i in range(N):
         threads.append(Thread(passenger, i, shared))
 
     train_thread = Thread(train, shared)

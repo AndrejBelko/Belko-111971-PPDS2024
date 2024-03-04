@@ -1,5 +1,3 @@
-import threading
-
 from fei.ppds import Thread, Semaphore, print, Mutex
 
 C = 5
@@ -7,7 +5,9 @@ N = 10
 
 
 class Shared:
+    """Shared variables."""
     def __init__(self, boardQ, boarded, unboardQ, unboarded, boardB, unboardB):
+        """Initialize shared variables."""
         self.boardQ = boardQ
         self.boarded = boarded
         self.unboardQ = unboardQ
@@ -18,7 +18,6 @@ class Shared:
 
 class Barrier:
     """This class represents a barrier."""
-
     def __init__(self, ready_cnt, turnstile, mutex):
         """Initializes barrier data."""
         self.turnstile = turnstile
@@ -38,9 +37,9 @@ class Barrier:
 
         if self.ready_cnt == C:
             if unboard:
-                shared.unboardQ.signal()
+                shared.unboarded.signal()
             if board:
-                shared.boardQ.signal()
+                shared.boarded.signal()
             self.ready_cnt = 0
             self.turnstile.signal(C)
 
@@ -118,11 +117,11 @@ def passenger(i, shared):
     while True:
         shared.boardQ.wait()
         board(i)
-        shared.boardB.wait(shared, board=True)  # bariera
+        shared.boardB.wait(shared, board=True)
 
         shared.unboardQ.wait()
         unboard(i)
-        shared.unboardB.wait(shared, unboard=True)  # bariera
+        shared.unboardB.wait(shared, unboard=True)
 
 
 def main():

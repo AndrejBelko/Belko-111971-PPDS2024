@@ -25,19 +25,22 @@ class Barrier:
         self.ready_cnt = ready_cnt
         self.mutex = mutex
 
-    def wait(self, semaphore, unboard=False, board=False):
+    def wait(self, shared=None, unboard=False, board=False):
         """
         Waits until every thread reaches the barrier
-        :param string: string to be printed
-        :param print_each_thread: whether to print each thread
-        :param print_last_thread: whether to print the last thread
+        :param board: barrier is used while passengers are boarding
+        :param unboard: barrier is used while passengers are unboarding
+        :param shared: shared data
         :return:
         """
         self.mutex.lock()
         self.ready_cnt += 1
 
         if self.ready_cnt == C:
-            semaphore.signal()
+            if unboard:
+                shared.unboardQ.signal()
+            if board:
+                shared.boardQ.signal()
             self.ready_cnt = 0
             self.turnstile.signal(C)
 
@@ -46,27 +49,53 @@ class Barrier:
 
 
 def load():
+    """
+    This function simulates boarding passengers.
+    :return:
+    """
     print("Passengers are boarding.")
 
 
 def unload():
+    """
+    This function simulates unboarding passengers.
+    :return:
+    """
     print("Passengers are unboarding.")
 
 
 def run():
+    """
+    This function simulates train ride.
+    :return:
+    """
     print("Train is running.")
 
 
 def board(i):
+    """
+    This function simulates boarding of specific passenger.
+    :param i: number (id) of passengers being boarded.
+    :return:
+    """
     print(f"Passenger {i} is boarding")
 
 
 def unboard(i):
+    """
+    This function simulates unboarding of specific passenger.
+    :param i: number (id) of passenger being unboarded.
+    :return:
+    """
     print(f"Passenger {i} is unboarding")
 
 
 def train(shared):
-    """Train the """
+    """
+    This function represents behaviour of train.
+    :param shared: shared data
+    :return:
+    """
     while True:
         load()
         shared.boardQ.signal(C)
@@ -80,15 +109,20 @@ def train(shared):
 
 
 def passenger(i, shared):
-    """Passenger """
+    """
+    This function represents behaviour of passenger.
+    :param i: number (id) of passenger
+    :param shared: shared data
+    :return:
+    """
     while True:
         shared.boardQ.wait()
         board(i)
-        shared.boardB.wait(shared.boarded, board=True)  # bariera
+        shared.boardB.wait(shared, board=True)  # bariera
 
         shared.unboardQ.wait()
         unboard(i)
-        shared.unboardB.wait(shared.unboarded, unboard=True)  # bariera
+        shared.unboardB.wait(shared, unboard=True)  # bariera
 
 
 def main():

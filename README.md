@@ -104,7 +104,7 @@ Passenger 6 is boarding
 Passenger 6 is unboarding
 ```
 Druhý typ funkcií simuluje správanie vláčiku. Ukážka funkcií *load(), unload(), run()*:
-```
+```python
 def load():
     """
     This function simulates boarding passengers.
@@ -186,6 +186,11 @@ Na začiatku cyklu pasažeir čaká na semafóre, ktorý signalizuje možnosť n
 že je možný nástup, sa vykoná funkcia *board(i)* a vlákno sa dostane do bariéry, kde čaká na naplnenie kapacity vláčika.
 Po nastúpení posledného pasažiera sa vlákno posunie ďalej a čaká na signalizáciu od vláčika, že môže vystúpiť. Vykoná funkciu
 *unboard(i)* a príde na druhú inštanciu bariéry, kde čaká na všetkých pasažierov pokým vystúpia. Keď sa tak stane, proces sa opakuje.
+
+## Vyhladovanie (Starvation)
+Pri takejto implementácii, bez použitia FIFO fronty, može dôjsť k javu, ktorý sa v angličtine nazýva *starvation*
+(vyhladovanie) vlákna. Stane sa to vtedy, keď vlákna, ktoré už boli vo vlaku sa predbehnú pred tie, ktoré ešte vo vlaku 
+nikdy neboli a ani sa nedostanú. Časom takéto vlákna vyhladujú.
 
 ## Zdroje
 pdf zo semináru 3
